@@ -48,7 +48,9 @@ setup(
         'redmsg_logger'
     ],
     install_requires=[
+        'PyYAML',
         'redmsg',
-        'sqlalchemy'
+        'sqlalchemy',
+        'psycopg2'
     ]
 )
