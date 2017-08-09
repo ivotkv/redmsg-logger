@@ -72,7 +72,7 @@ class SQLAlchemyHandler(BaseHandler):
         except Exception as e:
             try:
                 Error = self.database.table('logger_errors')
-                entry = session.add(Error(date=str(datetime.now()),
+                entry = session.add(Error(date=str(datetime.now()), # TODO: should be logged in UTC
                                           error=e.__class__.__name__,
                                           description=str(e),
                                           channel=message['channel'],
