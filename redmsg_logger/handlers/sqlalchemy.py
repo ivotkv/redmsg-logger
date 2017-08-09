@@ -45,6 +45,7 @@ class SQLAlchemyDatabase(object):
         return self.sessionmaker()
 
     def table(self, name):
+        # TODO: cache/memoize
         table = getattr(self.automap.classes, name.lower(), None)
         if table is None:
             raise TableNotFound('table does not exist or is not a viable SQLAlchemy table: {0}'.format(name))
@@ -64,20 +65,20 @@ class SQLAlchemyHandler(BaseHandler):
         session = self.database.session()
 
         try:
-            table = self.database.table(message['channel'])
+            Table = self.database.table(message['channel'])
             data = json.loads(message['data'])
             data['txid'] = message['txid']
-            session.add(table(**data['data']))
+            session.add(Table(**data['data']))
         except Exception as e:
-            error = self.database.table('logger_errors')
-            if error is not None:
-                entry = session.add(error(date=str(datetime.now()),
+            try:
+                Error = self.database.table('logger_errors')
+                entry = session.add(Error(date=str(datetime.now()),
                                           error=e.__class__.__name__,
                                           description=str(e),
                                           channel=message['channel'],
                                           txid=message['txid'],
                                           data=message['data']))
-            else:
+            except:
                 raise e
 
         session.commit()
