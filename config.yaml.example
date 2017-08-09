@@ -1,0 +1,13 @@
+channel: channel_name
+redmsg:
+    host: localhost
+    port: 6379
+    db: 0
+handler: sqlalchemy
+sqlalchemy:
+    type: postgresql
+    host: localhost
+    user: user
+    pass: pass
+    database: database
+    schema:
