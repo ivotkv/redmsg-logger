@@ -12,7 +12,6 @@
 # 
 
 from __future__ import print_function, unicode_literals, absolute_import
-import sys
 import json
 from datetime import datetime
 from sqlalchemy.ext.automap import automap_base
@@ -47,7 +46,9 @@ class SQLAlchemyDatabase(object):
 
     def table(self, name):
         table = getattr(self.automap.classes, name.lower(), None)
-        if table is not None and not isinstance(table, DeclarativeMeta):
+        if table is None:
+            raise TableNotFound('table does not exist or is not a viable SQLAlchemy table: {0}'.format(name))
+        elif not isinstance(table, DeclarativeMeta):
             raise InvalidTableName('reserved name cannot be a table name: {0}'.format(name))
         return table
 
@@ -64,8 +65,6 @@ class SQLAlchemyHandler(BaseHandler):
 
         try:
             table = self.database.table(message['channel'])
-            if table is None:
-                raise TableNotFound('table does not exist or is not a viable SQLAlchemy table: {0}'.format(message['channel']))
             data = json.loads(message['data'])
             data['txid'] = message['txid']
             session.add(table(**data['data']))
@@ -73,11 +72,12 @@ class SQLAlchemyHandler(BaseHandler):
             error = self.database.table('logger_errors')
             if error is not None:
                 entry = session.add(error(date=str(datetime.now()),
-                                          remote_ip=self.client_address[0],
                                           error=e.__class__.__name__,
                                           description=str(e),
-                                          data=raw_data))
+                                          channel=message['channel'],
+                                          txid=message['txid'],
+                                          data=message['data']))
             else:
-                sys.stderr.write('{0}: {1}: {2}\n'.format(e.__class__.__name__, e, raw_data).encode('utf-8'))
+                raise e
 
         session.commit()
