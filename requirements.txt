@@ -1,0 +1,4 @@
+PyYAML
+redmsg
+sqlalchemy
+psycopg2
