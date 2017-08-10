@@ -15,7 +15,7 @@
 from __future__ import print_function, unicode_literals, absolute_import
 import sys
 from redmsg import Subscriber
-from handlers.sqlalchemy import SQLAlchemyHandler
+from .handlers.sqlalchemy import SQLAlchemyHandler
 
 handlers = {
     'sqlalchemy': SQLAlchemyHandler
@@ -39,7 +39,7 @@ class Logger(object):
             except Exception as e:
                 sys.stderr.write('{0}: {1}: {2}\n'.format(e.__class__.__name__, e, message).encode('utf-8'))
 
-if __name__ == '__main__':
+def main():
     import yaml
     from argparse import ArgumentParser
     arg_parser = ArgumentParser()
@@ -53,3 +53,6 @@ if __name__ == '__main__':
 
     logger = Logger(config)
     logger.start()
+
+if __name__ == '__main__':
+    main()

@@ -12,10 +12,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # 
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup, find_packages
 
 __version__ = '0.1.0'
 
@@ -44,9 +41,12 @@ setup(
     keywords=[
         "redis", "messaging", "playback", "redmsg", "logger"
     ],
-    packages=[
-        'redmsg_logger'
-    ],
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    entry_points={
+        'console_scripts': [
+            'redmsg-logger = redmsg_logger.logger:main'
+        ]
+    },
     install_requires=[
         'PyYAML',
         'redmsg',
