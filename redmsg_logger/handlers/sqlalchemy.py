@@ -68,7 +68,7 @@ class SQLAlchemyHandler(BaseHandler):
             Table = self.database.table(message['channel'])
             data = json.loads(message['data'])
             data['txid'] = message['txid']
-            session.add(Table(**data['data']))
+            session.add(Table(**data))
         except Exception as e:
             try:
                 Error = self.database.table('logger_errors')
