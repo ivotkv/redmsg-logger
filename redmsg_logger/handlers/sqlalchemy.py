@@ -58,7 +58,7 @@ class SQLAlchemyHandler(BaseHandler):
     def __init__(self, config):
         self.database = SQLAlchemyDatabase(config)
 
-    def get_latest_txid(self):
+    def get_latest_txid(self, channel):
         return None # TODO
 
     def handle(self, message):

@@ -18,8 +18,8 @@ class BaseHandler(object):
     def __init__(self, config):
         self.config = config
 
-    def get_latest_txid(self):
+    def get_latest_txid(self, channel):
         raise NotImplementedError('not implemented in BaseHandler')
 
-    def handle(self):
+    def handle(self, message):
         raise NotImplementedError('not implemented in BaseHandler')
