@@ -1,4 +1,4 @@
 PyYAML
-redmsg
 sqlalchemy
 psycopg2
+redmsg>=0.2.0

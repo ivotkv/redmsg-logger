@@ -16,6 +16,7 @@ import json
 from datetime import datetime
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy.sql.expression import func
 from sqlalchemy.ext.declarative.api import DeclarativeMeta
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import create_engine
@@ -45,7 +46,7 @@ class SQLAlchemyDatabase(object):
         return self.sessionmaker()
 
     def table(self, name):
-        # TODO: cache/memoize
+        # TODO: cache/memoize?
         table = getattr(self.automap.classes, name.lower(), None)
         if table is None:
             raise TableNotFound('table does not exist or is not a viable SQLAlchemy table: {0}'.format(name))
@@ -59,7 +60,12 @@ class SQLAlchemyHandler(BaseHandler):
         self.database = SQLAlchemyDatabase(config)
 
     def get_latest_txid(self, channel):
-        return None # TODO
+        Table = self.database.table(channel)
+        session = self.database.session()
+        try:
+            return session.query(func.max(Table.txid)).scalar()
+        finally:
+            session.close()
 
     def handle(self, message):
         session = self.database.session()
@@ -72,7 +78,7 @@ class SQLAlchemyHandler(BaseHandler):
         except Exception as e:
             try:
                 Error = self.database.table('logger_errors')
-                entry = session.add(Error(date=str(datetime.now()), # TODO: should be logged in UTC
+                entry = session.add(Error(date=str(datetime.now()), # TODO: should be logged in UTC?
                                           error=e.__class__.__name__,
                                           description=str(e),
                                           channel=message['channel'],

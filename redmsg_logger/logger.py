@@ -32,7 +32,7 @@ class Logger(object):
         self.subscriber.subscribe(self.channel)
         latest_txid = self.handler.get_latest_txid(self.channel)
         generator = self.subscriber.listen() if latest_txid is None else \
-                    self.subscriber.listen_from(latest_txid)
+                    self.subscriber.listen_from(latest_txid + 1, ignore_missing=True)
         for message in generator:
             try:
                 self.handler.handle(message)
