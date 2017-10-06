@@ -16,6 +16,9 @@ from setuptools import setup, find_packages
 
 __version__ = '0.2.0'
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setup(
     name='redmsg-logger',
     version=__version__,
@@ -47,10 +50,5 @@ setup(
             'redmsg-logger = redmsg_logger.logger:main'
         ]
     },
-    install_requires=[
-        'PyYAML',
-        'redmsg',
-        'sqlalchemy',
-        'psycopg2'
-    ]
+    install_requires=requirements
 )
